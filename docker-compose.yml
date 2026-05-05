@@ -1,0 +1,92 @@
+version: "3.9"
+
+networks:
+  jobnet:
+    driver: bridge
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: jobprocessing_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: jobprocessing
+      POSTGRES_USER: jobuser
+      POSTGRES_PASSWORD: jobpassword
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - jobnet
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jobuser -d jobprocessing"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: jobprocessing_redis
+    restart: unless-stopped
+    networks:
+      - jobnet
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: jobprocessing_api
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=jobprocessing;Username=jobuser;Password=jobpassword"
+      Redis__ConnectionString: "redis:6379"
+      Cors__AllowedOrigins: "http://localhost:4200,http://localhost:80,http://frontend"
+    ports:
+      - "5000:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - jobnet
+
+  worker:
+    build:
+      context: ./worker
+      dockerfile: Dockerfile
+    container_name: jobprocessing_worker
+    restart: unless-stopped
+    environment:
+      DOTNET_ENVIRONMENT: Production
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=jobprocessing;Username=jobuser;Password=jobpassword"
+      Redis__ConnectionString: "redis:6379"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - jobnet
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: jobprocessing_frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+    networks:
+      - jobnet
+
+volumes:
+  postgres_data:
