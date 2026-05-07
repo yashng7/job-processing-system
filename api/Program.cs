@@ -33,7 +33,6 @@ builder.Services.AddScoped<IJobRepository, JobRepository>();
 builder.Services.AddScoped<IJobService, JobService>();
 
 builder.Services.AddSignalR();
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
@@ -57,16 +56,27 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-    try
+
+    const int maxRetries = 10;
+    for (int attempt = 1; attempt <= maxRetries; attempt++)
     {
-        logger.LogInformation("Applying database migrations...");
-        db.Database.Migrate();
-        logger.LogInformation("Database migrations applied successfully.");
-    }
-    catch (Exception ex)
-    {
-        logger.LogError(ex, "An error occurred while applying database migrations.");
-        throw;
+        try
+        {
+            logger.LogInformation("Database initialization attempt {Attempt}/{Max}...", attempt, maxRetries);
+            db.Database.EnsureCreated();
+            logger.LogInformation("Database initialized successfully.");
+            break;
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "Database not ready (attempt {Attempt}/{Max}). Retrying in 3s...", attempt, maxRetries);
+            if (attempt == maxRetries)
+            {
+                logger.LogError("Could not connect to database after {Max} attempts. Aborting.", maxRetries);
+                throw;
+            }
+            Thread.Sleep(3000);
+        }
     }
 }
 

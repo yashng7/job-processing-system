@@ -1,0 +1,89 @@
+<div class="fade-in" *ngIf="!isLoading && job">
+  <div class="page-header">
+    <div class="breadcrumb">
+      <a routerLink="/jobs">Jobs</a>
+      <span class="sep">›</span>
+      <span>{{ job.name }}</span>
+    </div>
+    <div class="header-actions">
+      <button
+        *ngIf="job.status === 'Failed'"
+        class="btn btn-danger"
+        (click)="retryJob()"
+        [disabled]="isRetrying">
+        <span *ngIf="isRetrying" class="spinner"></span>
+        🔁 {{ isRetrying ? 'Retrying...' : 'Retry Job' }}
+      </button>
+      <a routerLink="/jobs" class="btn btn-secondary">← Back</a>
+    </div>
+  </div>
+
+  <div class="alert alert-error" *ngIf="error">{{ error }}</div>
+  <div class="alert alert-success" *ngIf="successMessage">{{ successMessage }}</div>
+
+  <div class="detail-grid">
+    <div class="card detail-card">
+      <div class="card-header">
+        <h2>Job Information</h2>
+        <app-status-badge [status]="job.status" />
+      </div>
+
+      <div class="detail-rows">
+        <div class="detail-row">
+          <span class="detail-label">ID</span>
+          <span class="detail-value mono">{{ job.id }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Name</span>
+          <span class="detail-value">{{ job.name }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Status</span>
+          <span class="detail-value">
+            <app-status-badge [status]="job.status" />
+          </span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Retry Count</span>
+          <span class="detail-value" [class.retry-warning]="job.retryCount > 0">
+            {{ job.retryCount }} / 3
+          </span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Created At</span>
+          <span class="detail-value">{{ formatDate(job.createdAt) }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Updated At</span>
+          <span class="detail-value">{{ formatDate(job.updatedAt) }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-column">
+      <div class="card detail-card">
+        <div class="card-header">
+          <h2>Payload</h2>
+        </div>
+        <pre class="code-block">{{ formatJson(job.payload) }}</pre>
+      </div>
+
+      <div class="card detail-card" *ngIf="job.result">
+        <div class="card-header">
+          <h2>Result</h2>
+        </div>
+        <pre class="code-block" [class.error-text]="job.status === 'Failed'">{{ job.result }}</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="loading-container" *ngIf="isLoading">
+  <div class="spinner spinner-dark"></div>
+  <span>Loading job details...</span>
+</div>
+
+<div class="empty-state" *ngIf="!isLoading && !job">
+  <div class="empty-icon">🔍</div>
+  <p>Job not found. <a routerLink="/jobs">Go back to jobs</a></p>
+</div>

@@ -1,0 +1,37 @@
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <span class="logo-icon">⚡</span>
+        <span class="logo-text">JobQueue</span>
+      </div>
+      <div class="connection-status" [class.connected]="isConnected">
+        <span class="status-dot"></span>
+        <span class="status-label">{{ isConnected ? 'Live' : 'Offline' }}</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">📊</span>
+        <span>Dashboard</span>
+      </a>
+      <a routerLink="/jobs" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">📋</span>
+        <span>Jobs</span>
+      </a>
+      <a routerLink="/jobs/create" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">➕</span>
+        <span>Create Job</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <span>Job Processing System</span>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <router-outlet />
+  </main>
+</div>

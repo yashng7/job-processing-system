@@ -1,0 +1,101 @@
+<div class="fade-in">
+  <div class="page-header">
+    <div class="breadcrumb">
+      <a routerLink="/jobs">Jobs</a>
+      <span class="sep">›</span>
+      <span>Create Job</span>
+    </div>
+  </div>
+
+  <div class="create-layout">
+    <div class="card form-card">
+      <div class="form-header">
+        <h2>New Job</h2>
+        <p>Submit a new job to the processing queue.</p>
+      </div>
+
+      <div class="alert alert-error" *ngIf="error">{{ error }}</div>
+
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="form-group">
+          <label for="name">Job Name</label>
+          <input
+            id="name"
+            type="text"
+            formControlName="name"
+            placeholder="e.g., Send Weekly Report"
+            [class.is-invalid]="nameControl.invalid && nameControl.touched">
+          <span class="error-msg" *ngIf="nameControl.invalid && nameControl.touched">
+            Name is required.
+          </span>
+        </div>
+
+        <div class="form-group">
+          <div class="payload-label-row">
+            <label for="payload">Payload (JSON)</label>
+            <button type="button" class="btn btn-secondary btn-sm" (click)="formatPayload()">
+              Format JSON
+            </button>
+          </div>
+          <textarea
+            id="payload"
+            formControlName="payload"
+            rows="8"
+            placeholder='{"key": "value"}'
+            [class.is-invalid]="payloadControl.touched && !isPayloadValid()">
+          </textarea>
+          <span class="error-msg" *ngIf="payloadControl.touched && !isPayloadValid()">
+            Payload must be valid JSON.
+          </span>
+        </div>
+
+        <div class="form-actions">
+          <a routerLink="/jobs" class="btn btn-secondary">Cancel</a>
+          <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
+            <span *ngIf="isSubmitting" class="spinner"></span>
+            {{ isSubmitting ? 'Creating...' : 'Create Job' }}
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="sidebar-help">
+      <div class="card help-card">
+        <h3>Quick Examples</h3>
+        <p>Click to use an example payload:</p>
+        <div class="example-list">
+          <button
+            *ngFor="let ex of examplePayloads"
+            type="button"
+            class="example-btn"
+            (click)="useExample(ex.value)">
+            <span class="ex-label">{{ ex.label }}</span>
+            <span class="ex-preview">{{ ex.value | slice:0:35 }}...</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="card help-card">
+        <h3>Job Lifecycle</h3>
+        <div class="lifecycle">
+          <div class="life-step">
+            <span class="badge badge-queued">Queued</span>
+            <span class="life-arrow">→</span>
+          </div>
+          <div class="life-step">
+            <span class="badge badge-processing">Processing</span>
+            <span class="life-arrow">→</span>
+          </div>
+          <div class="life-step">
+            <span class="badge badge-completed">Completed</span>
+          </div>
+          <div class="life-divider">or</div>
+          <div class="life-step">
+            <span class="badge badge-failed">Failed</span>
+            <span class="life-note">(retry up to 3x)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

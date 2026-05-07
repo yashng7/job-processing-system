@@ -1,0 +1,92 @@
+<div class="fade-in">
+  <div class="page-header">
+    <h1>Dashboard</h1>
+    <a routerLink="/jobs/create" class="btn btn-primary">
+      ➕ Create Job
+    </a>
+  </div>
+
+  <div class="stats-grid" *ngIf="!isLoading">
+    <div class="stat-card">
+      <div class="stat-icon total">📦</div>
+      <div class="stat-info">
+        <div class="stat-value">{{ stats.total }}</div>
+        <div class="stat-label">Total Jobs</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon queued">⏳</div>
+      <div class="stat-info">
+        <div class="stat-value">{{ stats.queued }}</div>
+        <div class="stat-label">Queued</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon processing">⚙️</div>
+      <div class="stat-info">
+        <div class="stat-value">{{ stats.processing }}</div>
+        <div class="stat-label">Processing</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon completed">✓</div>
+      <div class="stat-info">
+        <div class="stat-value">{{ stats.completed }}</div>
+        <div class="stat-label">Completed</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon failed">✗</div>
+      <div class="stat-info">
+        <div class="stat-value">{{ stats.failed }}</div>
+        <div class="stat-label">Failed</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="loading-container" *ngIf="isLoading">
+    <div class="spinner spinner-dark"></div>
+    <span>Loading...</span>
+  </div>
+
+  <div class="recent-jobs card" *ngIf="!isLoading">
+    <div class="section-header">
+      <h2>Recent Jobs</h2>
+      <a routerLink="/jobs" class="btn btn-secondary btn-sm">View All</a>
+    </div>
+
+    <div *ngIf="recentJobs.length === 0" class="empty-state">
+      <div class="empty-icon">📭</div>
+      <p>No jobs yet. Create your first job!</p>
+    </div>
+
+    <div class="table-wrapper" *ngIf="recentJobs.length > 0">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Retries</th>
+            <th>Created</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let job of recentJobs">
+            <td class="job-name">{{ job.name }}</td>
+            <td>
+              <span [class]="'badge badge-' + job.status.toLowerCase()">
+                {{ job.status }}
+              </span>
+            </td>
+            <td>{{ job.retryCount }}</td>
+            <td class="text-muted">{{ formatDate(job.createdAt) }}</td>
+            <td>
+              <a [routerLink]="['/jobs', job.id]" class="btn btn-secondary btn-sm">View</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
