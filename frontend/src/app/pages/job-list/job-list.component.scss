@@ -1,0 +1,19 @@
+.header-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.job-name {
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.payload-cell {
+  font-family: 'JetBrains Mono', monospace; /* Keep monospace for payload but soft */
+  font-size: 12px;
+  color: var(--text-muted);
+  background: rgba(0, 0, 0, 0.2);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0;
+}

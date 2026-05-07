@@ -1,0 +1,156 @@
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-muted);
+  
+  a {
+    color: var(--text-muted);
+    &:hover { color: var(--primary); }
+  }
+  
+  .sep {
+    color: rgba(255, 255, 255, 0.2);
+  }
+}
+
+.create-layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 32px;
+}
+
+.form-card {
+  padding: 40px;
+}
+
+.form-header {
+  margin-bottom: 32px;
+  
+  h2 {
+    font-size: 28px;
+    margin-bottom: 8px;
+    color: var(--text-main);
+  }
+  
+  p {
+    color: var(--text-muted);
+  }
+}
+
+.payload-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+
+  label {
+    margin-bottom: 0;
+  }
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Sidebar Help */
+.sidebar-help {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.help-card {
+  padding: 24px;
+
+  h3 {
+    font-size: 18px;
+    margin-bottom: 16px;
+    color: var(--text-main);
+  }
+
+  p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+}
+
+.example-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.example-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  text-align: left;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--primary);
+  }
+
+  .ex-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 4px;
+  }
+
+  .ex-preview {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+}
+
+.lifecycle {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.life-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  .life-arrow {
+    color: var(--text-muted);
+    opacity: 0.5;
+  }
+
+  .life-note {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+}
+
+.life-divider {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: center;
+  margin: 4px 0;
+  opacity: 0.5;
+}
+
+@media (max-width: 992px) {
+  .create-layout {
+    grid-template-columns: 1fr;
+  }
+}
