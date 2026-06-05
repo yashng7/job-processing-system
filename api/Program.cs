@@ -1,5 +1,6 @@
 using JobProcessing.Api.Data;
 using JobProcessing.Api.Hubs;
+using JobProcessing.Api.Middleware;
 using JobProcessing.Api.Queue;
 using JobProcessing.Api.Repositories;
 using JobProcessing.Api.Services;
@@ -82,6 +83,10 @@ using (var scope = app.Services.CreateScope())
 
 app.UseSerilogRequestLogging();
 app.UseCors("AllowFrontend");
+
+// Basic Auth middleware — sits before controllers
+app.UseMiddleware<BasicAuthMiddleware>();
+
 app.MapControllers();
 app.MapHub<JobHub>("/hubs/jobs");
 
