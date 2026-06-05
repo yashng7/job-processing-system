@@ -46,7 +46,9 @@ services:
       ASPNETCORE_URLS: http://+:8080
       ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=jobprocessing;Username=jobuser;Password=jobpassword"
       Redis__ConnectionString: "redis:6379"
-      Cors__AllowedOrigins: "http://localhost:4200,http://localhost:80,http://frontend"
+      Cors__AllowedOrigins: "http://localhost,http://localhost:80,http://frontend"
+      BasicAuth__Username: "admin"
+      BasicAuth__Password: "secret123"
     ports:
       - "5000:8080"
     depends_on:
