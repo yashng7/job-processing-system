@@ -27,7 +27,16 @@
     </nav>
 
     <div class="sidebar-footer">
-      <span>Job Processing System</span>
+      <div class="user-info" *ngIf="currentUser">
+        <div class="user-avatar">{{ currentUser.username?.charAt(0)?.toUpperCase() }}</div>
+        <div class="user-details">
+          <span class="user-name">{{ currentUser.username }}</span>
+          <span class="user-role">{{ currentUser.role }}</span>
+        </div>
+      </div>
+      <button class="btn-logout" (click)="logout()" title="Logout">
+        🚪
+      </button>
     </div>
   </aside>
 

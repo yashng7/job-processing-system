@@ -47,8 +47,13 @@ services:
       ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=jobprocessing;Username=jobuser;Password=jobpassword"
       Redis__ConnectionString: "redis:6379"
       Cors__AllowedOrigins: "http://localhost,http://localhost:80,http://frontend"
-      BasicAuth__Username: "admin"
-      BasicAuth__Password: "secret123"
+      Jwt__Secret: "your-super-secret-jwt-key-minimum-32-characters-long"
+      Jwt__Issuer: "JobProcessingSystem"
+      Jwt__Audience: "JobProcessingClients"
+      Jwt__AccessTokenExpiryMinutes: "15"
+      Jwt__RefreshTokenExpiryDays: "7"
+      AdminUser__Username: "admin"
+      AdminUser__Password: "Admin@123456"
     ports:
       - "5000:8080"
     depends_on:

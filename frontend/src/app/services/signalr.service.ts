@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy, inject } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import * as signalR from '@microsoft/signalr';
 import { Job } from '../models/job.model';
@@ -11,9 +11,11 @@ export class SignalrService implements OnDestroy {
   readonly jobUpdated$ = new Subject<Job>();
   readonly connected$ = new Subject<boolean>();
 
-  connect(): void {
+  connect(accessToken: string): void {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl('/hubs/jobs')
+      .withUrl('/hubs/jobs', {
+        accessTokenFactory: () => accessToken
+      })
       .withAutomaticReconnect([0, 2000, 5000, 10000])
       .configureLogging(signalR.LogLevel.Warning)
       .build();
@@ -26,14 +28,10 @@ export class SignalrService implements OnDestroy {
     this.hubConnection.onclose(() => this.connected$.next(false));
 
     this.hubConnection.start()
-      .then(() => {
-        console.log('SignalR connected');
-        this.connected$.next(true);
-      })
+      .then(() => this.connected$.next(true))
       .catch(err => {
-        console.warn('SignalR connection failed, will retry:', err);
+        console.warn('SignalR connection failed:', err);
         this.connected$.next(false);
-        setTimeout(() => this.connect(), 5000);
       });
   }
 

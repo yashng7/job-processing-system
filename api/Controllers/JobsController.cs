@@ -1,11 +1,13 @@
 using JobProcessing.Api.Models.DTOs;
 using JobProcessing.Api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JobProcessing.Api.Controllers;
 
 [ApiController]
 [Route("api/jobs")]
+[Authorize]
 public class JobsController : ControllerBase
 {
     private readonly IJobService _jobService;
@@ -26,7 +28,7 @@ public class JobsController : ControllerBase
             return BadRequest(ModelState);
 
         var job = await _jobService.CreateJobAsync(request, cancellationToken);
-        _logger.LogInformation("Job {JobId} created via API", job.Id);
+        _logger.LogInformation("Job {JobId} created by user {User}", job.Id, User.Identity?.Name);
         return CreatedAtAction(nameof(GetJob), new { id = job.Id }, job);
     }
 
@@ -46,6 +48,7 @@ public class JobsController : ControllerBase
     }
 
     [HttpPost("{id:guid}/retry")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<RetryJobResponse>> RetryJob(Guid id, CancellationToken cancellationToken)
     {
         var result = await _jobService.RetryJobAsync(id, cancellationToken);
